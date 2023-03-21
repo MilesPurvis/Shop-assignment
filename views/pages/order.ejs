@@ -1,0 +1,19 @@
+<head>
+  <%- include('../shared/head.ejs') %>
+</head>
+<body>
+  <div>
+    <h1 class="text-secondary text-center p-2 display-1">Order</h1>
+    <div class="container-sm">
+      <%- include('../shared/form.ejs') %> <% if (typeof errors !== "undefined")
+      { for (let error of errors){%>
+
+      <p class="bg-danger text-white px-2">
+        <%= error.param%> | <%= error.msg %>
+      </p>
+
+      <% } }%> <%- include('../shared/footer.ejs') %>
+    </div>
+  </div>
+  <%- include('../shared/footer-scripts.ejs') %>
+</body>

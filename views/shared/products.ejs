@@ -1,0 +1,6 @@
+<% for(let product of productList){%> <% if (!product.amount <= 0) { %>
+<tr>
+  <td><%=product.amount%>x <%= product.name %></td>
+  <td>$<%=product.cost %></td>
+</tr>
+<% }} %>

@@ -1,0 +1,44 @@
+<head>
+  <%- include('../shared/head.ejs') %>
+</head>
+<body>
+  <div class="container-md">
+    <h1 class="text-secondary text-center p-2 display-1">Receipt</h1>
+    <table class="table table-hover caption-top table-striped">
+      <caption>
+        Receipt for <%=name%>
+      </caption>
+      <tr>
+        <td>Name:</td>
+        <td><%= name %></td>
+      </tr>
+      <tr>
+        <td>Email:</td>
+        <td><%= email %></td>
+      </tr>
+      <tr>
+        <td>Phone:</td>
+        <td><%= phone %></td>
+      </tr>
+      <tr>
+        <td>Address:</td>
+        <td><%= address %></td>
+      </tr>
+      <%- include('../shared/products') %>
+      <tr>
+        <td>Subtotal:</td>
+        <td>$<%=subTotal%></td>
+      </tr>
+      <tr>
+        <td>Taxes @ <%= taxRate %>%</td>
+        <td>$<%= taxTotal %></td>
+      </tr>
+      <tr>
+        <td>Total:</td>
+        <td>$<%= total %></td>
+      </tr>
+    </table>
+    <%- include('../shared/footer.ejs') %>
+  </div>
+  <%- include('../shared/footer-scripts.ejs') %>
+</body>
