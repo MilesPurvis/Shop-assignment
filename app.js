@@ -21,24 +21,19 @@ app.set("view engine", "ejs");
 const prod1 = {
   name: "GR Corolla Shirt",
   cost: 25,
-  amount: 0,
 };
 
 const prod2 = {
   name: "Oil Cooler",
   cost: 300,
-  amount: 0,
 };
 
 const prod3 = {
   name: "Track Stickers",
   cost: 5,
-  amount: 0,
 };
 
 const productList = [prod1, prod2, prod3];
-
-let subTotal = prod1.amount + prod2.amount + prod3.amount;
 
 //routes
 app.get("/", (req, res) => {
@@ -71,6 +66,9 @@ app.post(
     check("city", "Mandatory Field").not().isEmpty(),
     check("postal_code", "Mandatory Field").not().isEmpty(),
     check("province", "Mandatory Field").not().isEmpty(),
+    check("product1").isNumeric().optional({ checkFalsy: true }),
+    check("product2").isNumeric().optional({ checkFalsy: true }),
+    check("product3").isNumeric().optional({ checkFalsy: true }),
   ],
   (req, res) => {
     let errors = validationResult(req);
@@ -106,6 +104,7 @@ app.post(
       let taxTotal = financial(taxRate * subTotal);
 
       //display subtotal is less than 10$
+      //dont allow if it is NaN
       if (parseInt(subTotal) < 10) {
         console.log(subTotal);
         console.log("Subtotal is less that 10$");
