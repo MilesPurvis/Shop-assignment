@@ -12,13 +12,22 @@
         <td>Name:</td>
         <td><%= name %></td>
       </tr>
+
       <tr>
         <td>Email:</td>
-        <td><%= email %></td>
+        <% if (email !== "") { %>
+        <td><b></b><%= email %></td>
+        <% } else { %>
+        <td><i>Not Provided</i></td>
+        <%}%>
       </tr>
       <tr>
         <td>Phone:</td>
+        <% if (phone !== "") { %>
         <td><%= phone %></td>
+        <% } else { %>
+        <td><i>Not Provided</i></td>
+        <%}%>
       </tr>
       <tr>
         <td>Address:</td>
@@ -30,7 +39,7 @@
         <td>$<%=subTotal%></td>
       </tr>
       <tr>
-        <td>Taxes @ <%= taxRate %>%</td>
+        <td>Taxes @ <%= parseInt(taxRate*100) %>%</td>
         <td>$<%= taxTotal %></td>
       </tr>
       <tr>
@@ -38,6 +47,11 @@
         <td>$<%= total %></td>
       </tr>
     </table>
+    <a class="link-info" href="/orderList"
+      ><button type="button" class="btn btn-secondary">
+        View All Orders
+      </button></a
+    >
     <%- include('../shared/footer.ejs') %>
   </div>
   <%- include('../shared/footer-scripts.ejs') %>

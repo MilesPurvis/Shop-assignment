@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <%- include('../shared/head.ejs') %>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="text-secondary text-center p-2 display-1">All orders</h1>
+
+      <div>
+        <a class="link-primary" href="/order">
+          <button type="button" class="btn btn-success">
+            Click Here to Order
+          </button></a
+        >
+        <a class="link-primary" href="/">
+          <button type="button" class="btn btn-primary">
+            Return to Home
+          </button></a
+        >
+      </div>
+
+      <% if (typeof orders !== "undefined") { %>
+      <div class="p-4">
+        <table class="table">
+          <thead>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Address</th>
+            <th scope="col">Items</th>
+            <th scope="col">Subtotal</th>
+            <th scope="col">Tax Rate</th>
+            <th scope="col">Taxes</th>
+            <th scope="col">Total</th>
+          </thead>
+          <tbody>
+            <% orders.forEach(order => { %>
+            <tr>
+              <td><%= order.customerName %></td>
+              <td><%= order.customerEmail %></td>
+              <td><%= order.customerPhone %></td>
+              <td><%= order.customerAddress%></td>
+              <td>
+                <% order.orderItems.forEach(item => { %> <% if (item.amount > 0)
+                { %>
+                <p><%= item.name%>($<%= item.cost %>)x <%= item.amount %></p>
+                <% } %> <% }) %>
+              </td>
+
+              <td>$<%= order.orderSubtotal %></td>
+              <td><%= parseInt(order.taxRate*100) %>%</td>
+              <td>$<%= order.associatedTaxes %></td>
+              <td>$<%= order.orderTotal %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } %> <%- include('../shared/footer-scripts.ejs') %> <%-
+      include('../shared/footer.ejs') %>
+    </div>
+  </body>
+</html>

@@ -5,14 +5,20 @@
   <div>
     <h1 class="text-secondary text-center p-2 display-1">Order</h1>
     <div class="container-sm">
-      <%- include('../shared/form.ejs') %> <% if (typeof errors !== "undefined")
-      { for (let error of errors){%>
+      <% if (typeof errors !== "undefined") { for (let error of errors){%>
 
-      <p class="bg-danger text-white px-2">
-        <%= error.param%> | <%= error.msg %>
-      </p>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Invalid Format!</strong> <%= error.param%> | <%= error.msg %>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
 
-      <% } }%> <%- include('../shared/footer.ejs') %>
+      <% } }%> <%- include('../shared/form.ejs') %> <%-
+      include('../shared/footer.ejs') %>
     </div>
   </div>
   <%- include('../shared/footer-scripts.ejs') %>

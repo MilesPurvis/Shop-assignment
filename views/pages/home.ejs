@@ -3,10 +3,40 @@
 </head>
 <body>
   <div class="container-sm">
-    <h1>Welcome to My Shop</h1>
+    <h1 class="text-secondary text-center p-2 display-1">Welcome to My Shop</h1>
 
-    <a href="/order">Click Here to Order</a>
-    <%- include('../shared/footer.ejs') %>
+    <div
+      class="d-flex justify-content-center"
+      style="
+        background-image: url(images/cloud.png);
+        background-position: center;
+        background-size: contain;
+      "
+    >
+      <img src="images/shiba.gif" alt="Shib" />
+      <a class="link-primary p-2" href="/order">
+        <button type="button" class="btn btn-primary">
+          Click Here to Order
+        </button></a
+      >
+
+      <a class="link-info p-2" href="/orderList"
+        ><button type="button" class="btn text-light btn-warning">
+          View All Orders
+        </button></a
+      >
+    </div>
+
+    <p
+      style="
+        background-image: url(images/grass.png);
+        height: 250px;
+        background-repeat: no-repeat;
+        background-position: center;
+      "
+    >
+      <%- include('../shared/footer.ejs') %>
+    </p>
   </div>
   <%- include('../shared/footer-scripts.ejs') %>
 </body>

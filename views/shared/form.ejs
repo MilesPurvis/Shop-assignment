@@ -35,6 +35,20 @@
   </div>
   <div class="mb-3"><%- include('../shared/province.ejs') %></div>
 
+  <% if (typeof costAlert !== "undefined") { %>
+
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>You need to buy more!</strong> minimum subtotal is 10$
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+
+  <% } %>
+
   <div class="card-group">
     <div class="mb-3 card d-flex flex-column">
       <img class="card-img-top" src="/images/shirt.jpg" alt="shirt" />

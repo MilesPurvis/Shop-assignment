@@ -1,7 +1,9 @@
 //import packages, lib, modules
-const express = require("express");
-const path = require("path");
-const { check, validationResult } = require("express-validator");
+require('dotenv').config();
+const express = require('express');
+const path = require('path');
+const { check, validationResult } = require('express-validator');
+const { CustomerOrders } = require('./models/customers');
 
 //create an express applicaiton
 var app = express();
@@ -11,64 +13,74 @@ const port = 5000;
 app.use(express.urlencoded({ extended: false }));
 
 //set up static folder (public)
-
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
 //set up view engine
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 const prod1 = {
-  name: "GR Corolla Shirt",
+  name: 'GR Corolla Shirt',
   cost: 25,
 };
 
 const prod2 = {
-  name: "Oil Cooler",
+  name: 'Oil Cooler',
   cost: 300,
 };
 
 const prod3 = {
-  name: "Track Stickers",
+  name: 'Track Stickers',
   cost: 5,
 };
 
 const productList = [prod1, prod2, prod3];
 
 //routes
-app.get("/", (req, res) => {
-  res.render("pages/home");
+app.get('/', (req, res) => {
+  res.render('pages/home');
+});
+app.get('/orderlist', async (req, res) => {
+  let allOrders = await CustomerOrders.find({});
+  console.log(allOrders);
+  res.render('pages/orderlist', { orders: allOrders });
+});
+app.get('/orderlist', (req, res) => {
+  res.render('pages/orderlist');
 });
 
-app.get("/order", (req, res) => {
-  res.render("pages/order", {
+app.get('/order', (req, res) => {
+  res.render('pages/order', {
     prod1: prod1,
     prod2: prod2,
     prod3: prod3,
   });
 });
 
-app.get("/recipet", (req, res) => {
-  res.render("pages/recipet");
+app.get('/recipet', (req, res) => {
+  res.render('pages/recipet');
 });
 
 app.post(
-  "/order",
+  '/order',
   [
-    check("name", "Mandatory Field").not().isEmpty(),
-    check("email", "Please Enter Valid Email").isEmail(),
-    check("phone", "Mandatory Field")
+    check('name', 'Mandatory Field').not().isEmpty(),
+    check('email', 'Please Enter Valid Email')
+      .isEmail()
+      .optional({ checkFalsy: true }),
+    check('phone')
       .not()
       .isEmpty()
       .matches(/\d{3}-\d{3}-\d{4}/)
-      .withMessage("Required Format: 555-555-4444"),
-    check("address", "Mandatory Field").not().isEmpty(),
-    check("city", "Mandatory Field").not().isEmpty(),
-    check("postal_code", "Mandatory Field").not().isEmpty(),
-    check("province", "Mandatory Field").not().isEmpty(),
-    check("product1").isNumeric().optional({ checkFalsy: true }),
-    check("product2").isNumeric().optional({ checkFalsy: true }),
-    check("product3").isNumeric().optional({ checkFalsy: true }),
+      .withMessage('Required Format: 555-555-4444')
+      .optional({ checkFalsy: true }),
+    check('address', 'Mandatory Field').not().isEmpty(),
+    check('city', 'Mandatory Field').not().isEmpty(),
+    check('postal_code', 'Mandatory Field').not().isEmpty(),
+    check('province', 'Mandatory Field').not().isEmpty(),
+    check('product1').isNumeric().optional({ checkFalsy: true }),
+    check('product2').isNumeric().optional({ checkFalsy: true }),
+    check('product3').isNumeric().optional({ checkFalsy: true }),
   ],
   (req, res) => {
     let errors = validationResult(req);
@@ -76,7 +88,7 @@ app.post(
     console.log(req.body);
 
     if (!errors.isEmpty()) {
-      res.render("pages/order", {
+      res.render('pages/order', {
         errors: errors.array(),
         prod1: prod1,
         prod2: prod2,
@@ -90,6 +102,7 @@ app.post(
       let city = req.body.city;
       let pCode = req.body.postal_code;
       let province = req.body.province;
+      let costAlert = 'Total must be 10$ or greater';
 
       prod1.amount = req.body.product1;
       prod2.amount = req.body.product2;
@@ -106,10 +119,35 @@ app.post(
       //display subtotal is less than 10$
       //dont allow if it is NaN
       if (parseInt(subTotal) < 10) {
-        console.log(subTotal);
-        console.log("Subtotal is less that 10$");
+        costAlert = 'undefined';
+        res.render('pages/order', {
+          costAlert: costAlert,
+          prod1: prod1,
+          prod2: prod2,
+          prod3: prod3,
+        });
       } else {
-        res.render("pages/recipet", {
+        let customerOrder = new CustomerOrders({
+          customerName: name,
+          customerEmail: email,
+          customerPhone: phone,
+          customerAddress: fullAddress,
+          orderItems: productList,
+          orderSubtotal: subTotal,
+          taxRate: taxRate,
+          associatedTaxes: taxTotal,
+          orderTotal: total,
+        });
+
+        customerOrder
+          .save()
+          .then(() => {
+            console.log(`Customer ${name} order has been saved!`);
+          })
+          .catch((error) => {
+            console.log(error.message);
+          });
+        res.render('pages/recipet', {
           name: name,
           email: email,
           phone: phone,
@@ -150,43 +188,43 @@ function checkTax(province) {
   let taxRate = 0;
 
   switch (province) {
-    case "Alberta":
+    case 'Alberta':
       taxRate = 0.05;
       break;
-    case "British Columbia":
+    case 'British Columbia':
       taxRate = 0.12;
       break;
-    case "Manitoba":
+    case 'Manitoba':
       taxRate = 0.12;
       break;
-    case "New Brunswick":
+    case 'New Brunswick':
       taxRate = 0.15;
       break;
-    case "Newfoundland and Labrabor":
+    case 'Newfoundland and Labrabor':
       taxRate = 0.15;
       break;
-    case "Northwest Territories":
+    case 'Northwest Territories':
       taxRate = 0.05;
       break;
-    case "Nova Scotia":
+    case 'Nova Scotia':
       taxRate = 0.15;
       break;
-    case "Prince Edward Island":
+    case 'Prince Edward Island':
       taxRate = 0.15;
       break;
-    case "Nunavut":
+    case 'Nunavut':
       taxRate = 0.05;
       break;
-    case "Ontario":
+    case 'Ontario':
       taxRate = 0.13;
       break;
-    case "Quebec":
+    case 'Quebec':
       taxRate = 0.14975;
       break;
-    case "Yukon":
+    case 'Yukon':
       taxRate = 0.05;
       break;
-    case "Saskatchewan":
+    case 'Saskatchewan':
       taxRate = 0.11;
       break;
   }
@@ -199,7 +237,5 @@ function financial(x) {
 
 //run the applicaiton
 app.listen(port, () => {
-  console.log(
-    `Connect to the application listening here: http://localhost:${port}/`
-  );
+  console.log(`App listening here: http://localhost:${port}/`);
 });
